@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .carouse_box {
+            width: 60%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            overflow: hidden;
+        }
+        .carouse_box::after {
+            content: "";
+            display: block;
+            padding-top:56.25%;
+            width: 100%;
+        }
+        .carouse_box>ul li {
+           position: absolute;
+           top:0;
+           left:0;
+           display: none;
+        }
+        .carouse_box>ul li img {
+            width: 100%;
+        }
+
+        .point_box {
+            background-color: rgba(238, 170, 204, .8);
+            border-radius: 7px;
+            position: absolute;
+            left:50%;
+            bottom:12%;
+            transform: translateX(-50%);
+            padding:2px 4px;
+        }
+        .point_box li {
+            width: 10px;
+            height: 10px;
+            display: inline-block;
+            margin:0 2px;
+            background-color: #fff;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .point_box>ul {
+            font-size: 0;
+        }
+        .point_box .active {
+            background-color: #87ceeb;
+        }
+        .arrow {
+            height: 100%;
+            width: 10%;
+            position: absolute;
+            top:0;
+            user-select: none;
+        }
+        .arrow i {
+            font-size: 36px;
+            font-style:normal;
+            position: absolute;
+            top:50%;
+            left: 50%;
+            margin-left:-5%;
+            margin-top:-50% ;
+            transition: all .3s;
+            color:#fff;
+        }
+        .left_arrow {
+            left:-100%;
+            background:linear-gradient(90deg,#000 ,transparent);
+        }
+        .right_arrow {
+            right:-100%;
+            background:linear-gradient(-90deg,#000 ,transparent);
+        }
+        .carouse_box:hover .left_arrow{
+            left:0;
+        }
+        .carouse_box:hover .right_arrow{
+            right:0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="carouse_box">
+        <ul>
+            <li style="display: block;"><img src="images/2.jpg" alt=""></li>
+            <li><img src="images/7.jpg" alt=""></li>
+            <li><img src="images/8.jpg" alt=""></li>
+            <li><img src="images/9.jpg" alt=""></li>
+        </ul>
+        <div class="arrow left_arrow"><i><</i></div>
+        <div class="arrow right_arrow"><i>></i></div>
+        <div class="point_box">
+            <ul>
+                <li class="active"></li>
+                <li></li>
+                <li></li>
+                <li></li>
+            </ul>
+        </div>
+    </div>
+    <script src="js/jq_3.4.1.js"></script>
+    <script>
+        let timer=null;
+        let speed=1000;
+        let now_index=0;
+        let lis=$(".carouse_box>ul>li");
+        let point=$(".point_box li");
+
+        timer=setInterval(run,2000);
+        $(".carouse_box").hover(function(){clearInterval(timer)},function(){timer=setInterval(run,2000)});
+
+        function run(){
+            lis.eq(now_index).stop().fadeOut(speed);
+            (++now_index==lis.length) && (now_index=0);
+            lis.eq(now_index).stop().fadeIn(speed);
+            point.eq(now_index).addClass("active").siblings().removeClass("active");
+        }
+
+        $(".right_arrow").on("click",function(){run()});
+        $(".left_arrow").on("click",function(){
+            lis.eq(now_index).stop().fadeOut(speed);
+            (--now_index==-1) && (now_index=lis.length-1);
+            lis.eq(now_index).stop().fadeIn(speed);
+            point.eq(now_index).addClass("active").siblings().removeClass("active");
+        })
+
+        point.mouseenter(function(){
+            now_index=$(this).index();
+            lis.eq(now_index).stop().fadeIn(speed).siblings().fadeOut(speed);
+            $(this).addClass("active").siblings().removeClass("active");
+        })
+    </script>
+</body>
+
+</html>

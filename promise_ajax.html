@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        function _promise(_url) {
+            return new Promise(function (resolve, reject) {
+                var xhr = new XMLHttpRequest();
+                xhr.open("GET", _url);
+                xhr.send();
+                xhr.addEventListener("readystatechange", function () {
+                    if (xhr.readyState == 4) {
+                        if (xhr.status == 200) {
+                            resolve(JSON.parse(xhr.responseText));
+                        } else {
+                            reject("请求失败");
+                        }
+                    }
+                })
+            });
+        }
+
+        _promise("js/position_list.json").then(function (data) {
+            return _promise("http://jianshe.bluej.cn/api/index/get_carousel?postion_id=" + data[0].id)
+        }, function (msg) {
+            console.log(msg)
+        }).then(function (data) {
+            console.log(data)
+        }, function (res) {
+            console.log(res)
+        })
+    </script>
+</body>
+
+</html>

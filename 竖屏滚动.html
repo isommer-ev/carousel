@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>竖屏滚动</title>
+		<style>
+			* {
+				padding: 0;
+				margin: 0;
+				list-style: none;
+				
+			}
+			.web_box {
+				position: relative;
+				margin: 0 auto;
+				margin-top: 200px;
+				width: 720px;
+				height: 360px;
+				overflow: hidden;
+			}
+			.scroll_box {
+				position: absolute;
+				top: 0;
+				left: 0;
+				font-size: 0;
+			    transition: all 1.5s ease;
+			}
+			.title,.scroll_box li {
+				width: 720px;
+			}
+			.title span,.scroll_box li span {
+				text-align: center;
+				display: inline-block;
+				width: 33.3%;
+				height: 60px;
+				line-height: 60px;
+				font-size: 18px;
+			}
+			.scroll_box li:nth-of-type(2n) {
+				background: #dbecfc;
+			}
+			.title {
+				position: absolute;
+				top: 0;
+				height: 60px;
+				left: 0;
+				background: #58acfa;
+				color: white;
+				font-size: 0;
+				z-index: 66;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="web_box">
+			<div class="title">
+				<span>排名</span>
+				<span>姓名</span>
+				<span>年龄</span>
+			</div>
+			<ul class="scroll_box" style="transform: translateY(60px)">
+
+			</ul>
+		</div>
+
+
+		<script type="text/javascript">
+			var info = [{
+					name: "胡杭",
+					age: 16
+				},
+				{
+					name: "胜明",
+					age: 22
+				},
+				{
+					name: "军毅",
+					age: 21
+				},
+				{
+					name: "晓华",
+					age: 13
+				},
+				{
+					name: "盛聪",
+					age: 23
+				},
+				{
+					name: "侦剑",
+					age: 32
+				},
+				{
+					name: "红翔",
+					age: 25
+				},
+				{
+					name: "超维",
+					age: 18
+				},
+				{
+					name: "士琪",
+					age: 22
+				},
+				{
+					name: "艳华",
+					age: 20
+				}
+			];
+			var scroll_box = document.querySelector(".scroll_box");
+			var web_box=document.querySelector(".web_box");
+			var timer;
+			var now_index = 0;
+			var _len = info.length;
+			info.forEach(function(obj, index) {
+				var _list =
+					`
+					<li>
+						<span>${index+1}</span>
+						<span>${obj.name}</span>
+						<span>${obj.age}</span>
+					</li>
+					`
+				scroll_box.innerHTML += _list;
+
+			})
+			for (let i = 0; i < 6; i++) {
+				scroll_box.appendChild(scroll_box.children[i].cloneNode(true));
+			}
+
+			function autoplay() {
+				timer = setInterval(() => {
+					if (now_index >= 9) {
+						run();
+						scroll_box.addEventListener("transitionend", runStop);
+					} else {
+						run();
+					}
+				}, 1500)
+			}
+			autoplay();
+
+			function run() {
+				scroll_box.style.transform = "translateY(-" + now_index * 60 + "px)";
+				now_index++;
+			}
+
+			function runStop() {
+				now_index = 0;
+				scroll_box.style.transition = "none";
+				scroll_box.style.transform = "translateY(60px)";
+				getComputedStyle(scroll_box).transition;
+				scroll_box.style.transition = "";
+				scroll_box.removeEventListener("transitionend", runStop);
+			}
+
+			/**
+			 * 鼠标移入,取消自动轮播
+			 */
+			web_box.addEventListener("mouseenter", function() {
+				clearInterval(timer);
+			})
+
+			/**
+			 * 鼠标移出,开启自动轮播
+			 */
+			web_box.addEventListener("mouseleave", function() {
+				autoplay()
+			})
+		</script>
+	</body>
+</html>

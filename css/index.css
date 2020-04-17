@@ -1,0 +1,90 @@
+* {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  text-decoration: none; }
+
+.web .carousel_box {
+  width: 60%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  overflow: hidden; }
+  .web .carousel_box::before {
+    content: "";
+    display: block;
+    width: 100%;
+    padding-top: 56.25%; }
+  .web .carousel_box > ul {
+    white-space: nowrap;
+    font-size: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: all .5s;}
+    .web .carousel_box > ul li {
+      display: inline-block; }
+      .web .carousel_box > ul li a {
+        display: block;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        position: relative; }
+        .web .carousel_box > ul li a img {
+          width: 100%; }
+        .web .carousel_box > ul li a .mask {
+          width: 100%;
+          height: 20%;
+          background-color: rgba(0, 0, 0, 0.3);
+          position: absolute;
+          bottom: 0;
+          left: 0; }
+  .web .carousel_box .arrow {
+    height: 100%;
+    width: 10%;
+    position: absolute;
+    top: 0;
+    font-size: 36px;
+    color: #fff;
+    transition: all .3s; }
+    .web .carousel_box .arrow i {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      font-style: normal;
+      cursor: pointer;
+      user-select: none; }
+  .web .carousel_box .left_arrow {
+    left: -100%;
+    background: linear-gradient(90deg, #000, transparent); }
+  .web .carousel_box .right_arrow {
+    right: -100%;
+    background: linear-gradient(-90deg, #000, transparent); }
+  .web .carousel_box:hover .left_arrow {
+    left: 0; }
+  .web .carousel_box:hover .right_arrow {
+    right: 0; }
+  .web .carousel_box .point_box {
+    padding: 2px 4px;
+    background-color: rgba(238, 170, 204, 0.8);
+    border-radius: 7px;
+    position: absolute;
+    bottom: 8%;
+    left: 50%;
+    transform: translateX(-50%); }
+    .web .carousel_box .point_box ul {
+      font-size: 0; }
+      .web .carousel_box .point_box ul li {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        background-color: #fff;
+        margin: 0 2px;
+        border-radius: 50%;
+        cursor: pointer; }
+        .web .carousel_box .point_box ul li.active {
+          background-color: #87ceeb; }
+
+/*# sourceMappingURL=index.css.map */

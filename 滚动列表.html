@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        * {
+            padding:0;
+            margin: 0;
+        }
+        li {
+            list-style: none;
+            height: 30px;
+            border-bottom:1px dashed pink;
+            width: 100%;
+            line-height: 30px;
+            display: flex;
+            justify-content: space-around;
+        }
+        .carsouer_box {
+            width: 200px;
+            height: 310px;
+            border:1px solid #b7ceeb;
+            overflow: hidden;
+            position: absolute;
+            top:50%;
+            left:50%;
+            transform: translate(-50%,-50%);
+        }
+        ul {
+            height: 100%;
+            width: 100%;
+            transition: all .3s;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="carsouer_box">
+        <ul class="ul">         
+        </ul>
+        <ul class="clone_ul"></ul>
+    </div>
+    <script>
+        var info = [
+            { name: "胡杭", age: 16 },
+            { name: "胜明", age: 22 },
+            { name: "军毅", age: 21 },
+            { name: "晓华", age: 13 },
+            { name: "盛聪", age: 23 },
+            { name: "侦剑", age: 32 },
+            { name: "红翔", age: 25 },
+            { name: "超维", age: 18 },
+            { name: "士琪", age: 22 },
+            { name: "艳华", age: 20 }
+        ];
+        var now_index=0;
+        var ul=document.querySelector(".ul"),
+            clone_ul=document.querySelector(".clone_ul")
+            carsouer_box=document.querySelector(".carsouer_box");
+            info.forEach(function(val,index){
+                ul.innerHTML+=`<li><span>${val.name}</span><span>${val.age}</span></li>`;
+            })
+           
+            setInterval(function(){
+                clone_ul.innerHTML=ul.innerHTML;
+                if(clone_ul.offsetTop-carsouer_box.offsetTop<=0){
+                    carsouer_box.offsetTop-=ul.offsetTop;
+                }else{
+                    carsouer_box.scrollTop++;
+                }
+            //     if(++now_index==2){
+            //         var clone_ul=ul.cloneNode(true);
+            //         carsouer_box.appendChild(clone_ul);
+            //         ul.style.transform="translateY(-"+now_index*30+"px)";
+            //         ul.addEventListener("transitionend",function(){
+            //             now_index=0;
+            //             ul.style.transition="none";
+            //             ul.style.transform="translateY(-"+now_index*30+"px)";
+            //         })
+            //     }
+            //         ul.style.transform="translateY(-"+now_index*30+"px)"
+            // },3000)
+            },50)
+    </script>
+</body>
+
+</html>

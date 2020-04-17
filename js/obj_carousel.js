@@ -1,0 +1,119 @@
+function init_carousel(box_id){
+    this.carousel_box=document.querySelector(box_id);
+    this.left_arrow=this.carousel_box.querySelector(".left_arrow");
+    this.right_arrow=this.carousel_box.querySelector(".right_arrow");
+    this.carousel_ul=this.carousel_box.querySelector(":first-child");
+    this.point_list=this.carousel_box.querySelectorAll(".point_box li");
+    this.now_index=this.last_index=0;
+    this.is_run=false;
+    this.timer;
+    //右箭头
+    this.right_arrow.addEventListener("click",function(){
+        if(!this.is_run){
+            this.is_run=true;
+            if(++this.now_index==this.carousel_ul.childElementCount){
+                this.right_end_run();
+            }else{
+                this.run();
+            }           
+        }
+    }.bind(this))
+    //左箭头
+    this.left_arrow.addEventListener("click",function(){
+        if(!this.is_run){
+            this.is_run=true;
+            if(--this.now_index==-1){
+               this.left_end_run();
+            }else{
+                this.run();
+            }
+        }
+     }.bind(this))
+     this.autoPlay();
+    //鼠标移入,取消自动轮播
+    this.carousel_box.addEventListener("mouseenter",function(){
+        clearInterval(this.timer);
+    }.bind(this))
+    //鼠标移出,开启自动轮播
+    this.carousel_box.addEventListener("mouseleave",function(){
+        this.autoPlay();
+    }.bind(this))
+    //点击小点
+    this.point_list.forEach(function(val,index){
+        val.addEventListener("click",function(){
+            if(!this.is_run){
+                this.is_run=true;
+                this.carousel_ul.style.transform="translate(-"+index+"00%)";
+                this.point_list[this.last_index].classList.remove("active");
+                this.point_list[index].classList.add("active");
+                this.last_index=index;
+                this.carousel_ul.addEventListener("transitionend",function(){
+                    this.is_run=false;
+                }.bind(this));
+            }
+        }.bind(this))
+    }.bind(this))
+}
+//运行主函数
+init_carousel.prototype.run=function(){
+    this.carousel_ul.style.transform="translate(-"+this.now_index+"00%)";
+    this.point_list[this.last_index].classList.remove("active");
+    this.point_list[this.now_index].classList.add("active");
+    this.last_index=this.now_index;
+    this.carousel_ul.addEventListener("transitionend",function(){
+        this.is_run=false;
+    }.bind(this));
+}
+//右边尽头函数
+init_carousel.prototype.right_end_run=function(){
+    this.clone_first=this.carousel_ul.children[0].cloneNode(true);
+    this.carousel_ul.appendChild(this.clone_first);
+    this.carousel_ul.style.transform="translate(-"+this.now_index+"00%)";
+    this.carousel_ul.addEventListener("transitionend",function(){
+        this.carousel_ul.style.transition="none";
+        this.now_index=0;
+        this.carousel_ul.style.transform="translate(-"+this.now_index+"00%)";
+        this.clone_first.remove();
+        getComputedStyle(this.carousel_ul).transition;
+        this.carousel_ul.style.transition="";
+        this.point_list[this.last_index].classList.remove("active");
+        this.point_list[this.now_index].classList.add("active");
+        this.last_index=this.now_index;
+        this.is_run=false;
+    }.bind(this),{once:true})
+}
+//左边尽头函数
+init_carousel.prototype.left_end_run=function(){
+    this.clone_last=this.carousel_ul.lastElementChild.cloneNode(true);
+    this.carousel_ul.insertBefore(this.clone_last,this.carousel_ul.firstElementChild);
+    this.carousel_ul.style.transition="none";
+    this.carousel_ul.style.transform="translate(-100%)";
+    getComputedStyle(this.carousel_ul).transition;
+    this.carousel_ul.style.transition="";
+    this.carousel_ul.style.transform="translate(0)";
+    this.carousel_ul.addEventListener("transitionend",function(){
+        this.carousel_ul.style.transition="none";
+        this.now_index=this.carousel_ul.childElementCount-2;
+        this.carousel_ul.style.transform="translate(-"+this.now_index+"00%)";
+        this.clone_last.remove();
+        getComputedStyle(this.carousel_ul).transition;
+        this.carousel_ul.style.transition="";
+        this.point_list[this.last_index].classList.remove("active");
+        this.point_list[this.now_index].classList.add("active");
+        this.last_index=this.now_index;
+        this.is_run=false;
+    }.bind(this),{once:true});
+}
+//自动轮播
+init_carousel.prototype.autoPlay=function(){
+    this.timer=setInterval(function(){
+        if(!this.is_run){
+            this.is_run=true;
+            if(++this.now_index==this.carousel_ul.childElementCount){
+                this.right_end_run();
+            }else{
+                this.run();
+            }           
+        }
+    }.bind(this),2000);
+}

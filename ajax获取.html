@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/index.css">
+    <style>
+        ._select {
+            width: 120px;
+            text-align-last: center;
+        }
+
+        .web .carousel_box::before {
+            content: "";
+            display: block;
+            width: 100%;
+            padding-top: 36.25%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="web">
+        <select name="" id="" class="_select"></select>
+        <div class="carousel_box">
+            <ul>
+            </ul>
+            <div class="arrow left_arrow"><i><</i> </div> 
+            <div class="arrow right_arrow"><i>></i></div>
+            <div class="point_box">
+                <ul>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script>
+        var carousel_ul = document.querySelector(".carousel_box>ul"),
+            carousel_box = document.querySelector(".carousel_box"),
+            left_arrow = document.querySelector(".left_arrow"),
+            right_arrow = document.querySelector(".right_arrow"),
+            _select = document.querySelector("._select"),
+            point_ul = document.querySelector(".point_box ul"),
+            now_index = last_index = 0,
+            timer,
+            is_run = true;
+
+        //封装ajax
+        function _ajax(methon = "GET", _url, param = "", _callback) {
+            var xhr = new XMLHttpRequest()
+            if (methon == "GET") {
+                var req_url = _url + "?" + param;
+            }
+            xhr.open(methon, req_url);
+            if (methon == "GET") {
+                xhr.send();
+            } else {
+                xhr.setRequestHeader("content-type", "application/x-www-form-urlencoded");
+                xhr.send("param");
+            }
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    _callback(JSON.parse(xhr.responseText));
+                }
+            }
+        }
+
+
+        window.addEventListener("load",function(){
+            _ajax("GET", "js/position_list.json", "positin_id", function (date){
+                date.forEach(function(val){
+                    _select.innerHTML+=`<option value="${val.id}">${val.name}</option>`;
+                })
+                carousel_ajax();
+            })
+            function carousel_ajax(){
+                var now_position_id=_select.value;              
+                _ajax("GET", "http://jianshe.bluej.cn/api/index/get_carousel", "position_id=" + now_position_id, function (date){
+                    carousel_ul.innerHTML=point_ul.innerHTML="";
+                    now_index=last_index=0;
+                    carousel_ul.style.transform="";
+                    var _url = "http://jianshe.bluej.cn";
+                    date.data.forEach(function(val){
+                        carousel_ul.innerHTML+=` <li><a><img src=${ _url + val.ch_img_url}></a></li>`;
+                        point_ul.innerHTML+=`<li></li>`;
+                    })
+                    // carousel_ul.insertBefore(carousel_ul.lastElementChild.cloneNode(true),carousel_ul.firstElementChild);
+                    // carousel_ul.appendChild(carousel_ul.children[1].cloneNode(true));
+                    point_ul.firstElementChild.classList.add("active");
+                    var point_list=document.querySelectorAll(".point_box li");
+                    //
+                    left_arrow.addEventListener("click",function(){
+                        if(is_run){
+                            is_run=false;
+                            if(--now_index==-1){
+                                left_end_run();
+                            }else{
+                                run();
+                            }
+                        }
+                    })
+                    //
+                    right_arrow.addEventListener("click",function(){
+                        if(is_run){
+                            is_run=false;
+                            if(++now_index==point_list.length){
+                                right_end_run();
+                            }else{
+                                run();
+                            }
+                        }
+                    })
+                    function run(){
+                        carousel_ul.style.transform="translateX(-"+now_index+"00%)";
+                        point_list[last_index].classList.remove("active");
+                        point_list[now_index].classList.add("active");
+                        last_index=now_index;
+                        carousel_ul.addEventListener("transitionend",function(){
+                            is_run=true;
+                        })
+                    }
+                    function right_end_run(){
+                        var clone_li=carousel_ul.firstElementChild.cloneNode(true);
+                        carousel_ul.appendChild(clone_li);
+                        carousel_ul.style.transform="translateX(-"+now_index+"00%)";
+                        carousel_ul.addEventListener("transitionend",function(){
+                            carousel_ul.style.transition="none";
+                            now_index=0;
+                            carousel_ul.style.transform="translateX(-"+now_index+"00%)";
+                            getComputedStyle(carousel_ul).transition;
+                            carousel_ul.style.transition="";
+                            point_list[last_index].classList.remove("active");
+                            point_list[now_index].classList.add("active");
+                            last_index=now_index;
+                            is_run=true;
+                        },{once:true})
+                    }
+
+                    function left_end_run(){
+                        var clone_lastli=carousel_ul.lastElementChild.cloneNode(true);
+                        carousel_ul.insertBefore(clone_lastli,carousel_ul.firstElementChild);
+                        carousel_ul.style.transition="none";
+                        carousel_ul.style.transform="translateX(-100%)";
+                        getComputedStyle(carousel_ul).transition;
+                        carousel_ul.style.transition="";
+                        carousel_ul.style.transform="translateX(0)";
+                        carousel_ul.addEventListener("transitionend",left_end);
+                    }
+                    function left_end(){
+                        now_index=point_list.length-1;
+                        carousel_ul.style.transition="none";
+                        carousel_ul.style.transform="translateX(-"+now_index+"00%)";
+                        clone_lastli.remove();
+                        getComputedStyle(carousel_ul).transition;
+                        carousel_ul.style.transition="";
+                        point_list[last_index].classList.remove("active");
+                        point_list[now_index].classList.add("active");
+                        last_index = now_index;
+                        is_run=true;
+                        carousel_ul.removeEventListener("transitionend",left_end);
+                    }
+
+                    point_list.forEach(function(val,index){
+                        val.addEventListener("click",function(){
+                            now_index=index;
+                            run();
+                        })
+                    })
+                    function autoPlay(){
+                        clearInterval(timer);
+                        timer=setInterval(function(){
+                           if(is_run){
+                               is_run=false;
+                                if(++now_index==point_list.length){
+                                    right_end_run();
+                                }else{
+                                    run();
+                                }
+                           }
+                        },3000)
+                    }
+                    autoPlay();
+                    carousel_box.addEventListener("mouseenter",function(){
+                        clearInterval(timer);
+                    })
+                    carousel_box.addEventListener("mouseleave",function(){
+                        autoPlay();
+                    })
+                })
+            }
+            _select.onchange=function(){
+                carousel_ajax();
+            }
+
+        })
+    </script>
+</body>
+
+</html>
